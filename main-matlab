@@ -1,0 +1,25 @@
+clear, clc
+%% load the data of roughness
+A = xlsread(‘roughness.xls’);
+% (x, y) is measurement point
+X = A(:,1);
+Y = A(:,2);
+
+%% calculate the mean line to ensure to equalize the area contained between the two sides of the line
+meanLine = 0;
+for mid = min(Y):0.0001:max(Y)
+  % calculate the integral
+	area = trapz(X, Y-mid);
+  % when the area is close 0, get the mean line
+	if abs(area) < 1.0e-3
+		meanLine = mid;
+		break
+	end
+end
+
+%% calcute Ra
+sum = 0;
+for n = 1:size(X)
+	sum = sum + abs(Y(n) – meanLine)
+end
+Ra = sum / size(x,1);
